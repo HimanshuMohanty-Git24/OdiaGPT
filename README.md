@@ -5,13 +5,14 @@
 [![Hugging Face Model](https://img.shields.io/badge/🤗%20Hugging%20Face-CodeHima%2FOdiaGPT--30M-FFD21E?style=for-the-badge)](https://huggingface.co/CodeHima/OdiaGPT-30M)
 [![Hugging Face Space](https://img.shields.io/badge/🤗%20Demo-OdiaGPT--Web-blue?style=for-the-badge)](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web)
 [![Gradio Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Gradio-orange?style=for-the-badge)](https://7165f80b8a0ec54d28.gradio.live)
+[![Research Paper](https://img.shields.io/badge/📄%20Paper-PDF%2FReport-purple?style=for-the-badge)](reports/research_paper.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
 
 **A Small, Modern Odia Decoder-Only Language Model Built & Trained 100% From Scratch**
 
-[Explore on Hugging Face](https://huggingface.co/CodeHima/OdiaGPT-30M) • [Interactive Web Demo](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web) • [Live Gradio Session](https://7165f80b8a0ec54d28.gradio.live) • [Architecture](#architecture) • [Getting Started](#getting-started) • [Evaluation](#evaluation--results)
+[Read Research Paper](reports/research_paper.md) • [Explore on Hugging Face](https://huggingface.co/CodeHima/OdiaGPT-30M) • [Interactive Web Demo](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web) • [Live Gradio Session](https://7165f80b8a0ec54d28.gradio.live) • [Architecture](#architecture) • [Getting Started](#getting-started) • [Evaluation](#evaluation--results)
 
 </div>
 
@@ -177,7 +178,8 @@ OdiaGPT/
 │   ├── test_cleaning.py   # Unicode normalization & filtering tests (13 tests)
 │   ├── test_model.py      # Causality, shapes, gradients, and RoPE tests
 │   └── test_sdpa.py       # FlashAttention numerical equivalency tests
-├── reports/               # Technical documentation
+├── reports/               # Technical documentation & academic paper
+│   ├── research_paper.md  # Full citable academic research paper
 │   ├── main_training_report.md
 │   ├── evaluation_report.md
 │   ├── final_report.md
@@ -206,6 +208,22 @@ python -m unittest discover -s tests -v
 - **Base Foundation Model**: OdiaGPT is a pure autoregressive next-token predictor. It is not instruction-tuned or RLHF aligned, and will not reliably answer questions in a conversational assistant format without fine-tuning.
 - **Factual Knowledge**: Generations reflect statistical language patterns from web data; they should not be relied upon for factual or historical queries.
 - **Community Use**: Provided freely under the MIT License for educational and linguistic research into low-resource Indic language models.
+
+---
+
+## 📖 Citation
+
+If you use OdiaGPT in your research or project, please cite:
+
+```bibtex
+@article{mohanty2026odiagpt,
+  title     = {OdiaGPT: Pretraining an Indic Decoder-Only Transformer from Scratch for Low-Resource Odia Language Modeling},
+  author    = {Mohanty, Himanshu},
+  journal   = {arXiv preprint / GitHub Research Report},
+  year      = {2026},
+  url       = {https://github.com/HimanshuMohanty-Git24/OdiaGPT}
+}
+```
 
 ---
 
