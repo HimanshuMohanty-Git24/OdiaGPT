@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Checkpoints and model weights
+checkpoints/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Large raw & tokenized datasets
+data/raw/
+data/processed/
+data/tokenized/
+*.tar.gz
+odiagpt_runtime/
+export/
+
+# Environment & IDE
+.env
+.venv
+env/
+venv/
+.idea/
+.vscode/
+
+# Logs & temp
+*.log
+.DS_Store
