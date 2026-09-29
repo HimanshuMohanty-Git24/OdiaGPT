@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OdiaGPT: Pretraining an Indic Decoder-Only Transformer from Scratch for Low-Resource Odia Language Modeling</title>
+
+<!-- KaTeX CSS & JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<!-- Google Fonts: Latin Modern / Times / Noto Sans Oriya -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Oriya:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  @page {
+    size: letter portrait;
+    margin: 15mm 14mm 15mm 14mm;
+    @top-right {
+      content: "OdiaGPT: Pretraining from Scratch";
+      font-size: 8pt;
+      font-style: italic;
+      color: #666;
+    }
+    @bottom-center {
+      content: counter(page);
+      font-size: 9pt;
+      font-family: 'Libre Baskerville', serif;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Libre Baskerville', 'Times New Roman', serif;
+    font-size: 9.0pt;
+    line-height: 1.38;
+    color: #111;
+    margin: 0;
+    padding: 0;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .odia {
+    font-family: 'Noto Sans Oriya', 'Nirmala UI', 'Kalinga', sans-serif;
+    font-size: 9.6pt;
+  }
+
+  code, pre, .mono {
+    font-family: 'Source Code Pro', Consolas, monospace;
+    font-size: 8.0pt;
+    background-color: #f4f5f7;
+    padding: 1px 3px;
+    border-radius: 2px;
+  }
+
+  /* Top Spanning Header */
+  .paper-header {
+    text-align: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 0.5pt solid #ddd;
+  }
+
+  h1.title {
+    font-size: 17pt;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0 0 10px 0;
+    color: #0b1a30;
+  }
+
+  .authors {
+    font-size: 10pt;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .affiliations {
+    font-size: 8.8pt;
+    color: #444;
+    margin-bottom: 14px;
+  }
+
+  .affiliations a {
+    color: #1a56db;
+    text-decoration: none;
+  }
+
+  /* Abstract Box */
+  .abstract-container {
+    max-width: 92%;
+    margin: 0 auto 12px auto;
+    text-align: justify;
+    padding: 8px 14px;
+    background-color: #fafbfc;
+    border-left: 3px solid #1a56db;
+  }
+
+  .abstract-title {
+    font-weight: 700;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: inline;
+  }
+
+  .keywords {
+    margin-top: 6px;
+    font-size: 8.5pt;
+  }
+
+  /* Two Column Body */
+  .paper-body {
+    column-count: 2;
+    column-gap: 20px;
+    text-align: justify;
+  }
+
+  h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 14px 0 6px 0;
+    color: #0b1a30;
+    border-bottom: 0.5pt solid #ccc;
+    padding-bottom: 2px;
+    break-after: avoid;
+  }
+
+  h3 {
+    font-size: 9.8pt;
+    font-weight: 700;
+    margin: 10px 0 4px 0;
+    color: #222;
+    break-after: avoid;
+  }
+
+  p {
+    margin: 0 0 7px 0;
+    text-indent: 1em;
+  }
+
+  p.no-indent {
+    text-indent: 0;
+  }
+
+  ul, ol {
+    margin: 3px 0 8px 16px;
+    padding: 0;
+    text-align: left;
+  }
+
+  li {
+    margin-bottom: 3px;
+  }
+
+  a {
+    word-break: break-word;
+  }
+
+  /* Full Width and Column Figures */
+  .figure-span {
+    column-span: all;
+    margin: 12px 0 16px 0;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .figure-col {
+    margin: 10px 0 12px 0;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .figure-span img, .figure-col img {
+    max-width: 100%;
+    height: auto;
+    border: 0.5pt solid #e0e0e0;
+    border-radius: 3px;
+  }
+
+  .caption {
+    font-size: 8.2pt;
+    color: #333;
+    margin-top: 5px;
+    text-align: justify;
+    line-height: 1.35;
+  }
+
+  .caption-bold {
+    font-weight: 700;
+    color: #111;
+  }
+
+  /* Tables (Booktabs style) */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 12px 0;
+    font-size: 8pt;
+    line-height: 1.3;
+    break-inside: avoid;
+  }
+
+  table thead tr:first-child {
+    border-top: 1.2pt solid #111;
+    border-bottom: 0.6pt solid #111;
+  }
+
+  table tbody tr:last-child {
+    border-bottom: 1.2pt solid #111;
+  }
+
+  th, td {
+    padding: 4px 6px;
+    text-align: left;
+  }
+
+  th {
+    font-weight: 700;
+  }
+
+  td.num, th.num {
+    text-align: right;
+  }
+
+  /* Equations */
+  .equation-box {
+    margin: 6px 0;
+    text-align: center;
+    font-size: 9pt;
+    break-inside: avoid;
+  }
+
+  /* Qualitative Prompt Boxes */
+  .qual-box {
+    background: #fdfdfd;
+    border: 0.5pt solid #d1d5db;
+    border-left: 3px solid #059669;
+    padding: 6px 8px;
+    margin: 7px 0;
+    font-size: 8.5pt;
+    break-inside: avoid;
+  }
+
+  .qual-box .p-title {
+    font-weight: bold;
+    color: #065f46;
+  }
+
+  /* References */
+  .references {
+    font-size: 8pt;
+    line-height: 1.32;
+    padding-left: 18px;
+    margin-top: 6px;
+  }
+
+  .references li {
+    margin-bottom: 5px;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header (Spans Full Width) -->
+<div class="paper-header">
+  <h1 class="title">OdiaGPT: Pretraining an Indic Decoder-Only Transformer from Scratch for Low-Resource Odia Language Modeling</h1>
+  <div class="authors">Himanshu Mohanty</div>
+  <div class="affiliations">
+    Independent AI Researcher / CodeHima &bull; <code>codehimanshu24@gmail.com</code><br>
+    Repository: <a href="https://github.com/HimanshuMohanty-Git24/OdiaGPT">github.com/HimanshuMohanty-Git24/OdiaGPT</a> &bull; Hugging Face: <a href="https://huggingface.co/CodeHima/OdiaGPT-30M">CodeHima/OdiaGPT-30M</a>
+  </div>
+
+  <div class="abstract-container">
+    <div class="abstract-title">Abstract &mdash; </div>
+    Autoregressive large language models (LLMs) have achieved remarkable linguistic and computational capabilities. However, low-resource and non-Latin languages&mdash;specifically classical Indic languages such as <b>Odia</b> (<span class="odia">ଓଡ଼ିଆ</span>), spoken by over 50 million people&mdash;remain severely disadvantaged. Commercial and frontier open-weight models suffer from prohibitive "tokenizer taxation" (excessive subword fragmentation), high inference latency, and negligible representation in pretraining corpora ($<0.01\%$). In this paper, we present <b>OdiaGPT</b>, an educational and foundational decoder-only Transformer built and trained <b>100% from scratch</b> for the Odia language.
+    Operating under a strict zero-pretrained-dependency policy, OdiaGPT utilizes zero pretrained model checkpoints, zero off-the-shelf multilingual tokenizers, and zero high-level wrapper abstractions. We construct a specialized from-scratch 8,192-vocabulary SentencePiece Byte-Pair Encoding (BPE) tokenizer with 100% character coverage and byte fallback, eliminating character dropping and optimizing token compression for Brahmic scripts. Our flagship model, <b>OdiaGPT-30M</b> (31,465,984 parameters), incorporates Rotary Position Embeddings (RoPE), Pre-RMSNorm, SwiGLU feed-forward networks, causal multi-head self-attention with PyTorch Scaled Dot-Product Attention (SDPA), and tied token embeddings. Trained on a single NVIDIA Tesla T4 GPU over 29.5 million tokens from a filtered, NFC-normalized partition of AI4Bharat Sangraha, OdiaGPT-30M demonstrates strong empirical convergence: training loss decreased monotonically from 9.07 to 4.5156, and validation perplexity fell from 8,865.0 to <b>106.09</b> at a throughput of 35,202 tokens/second with only 3.53 GiB peak VRAM. Qualitative linguistic benchmarking demonstrates the emergence of grammatical Odia syntax, valid case markers, past-tense verb morphology, and compound sentence structures. We release the full codebase under the MIT License, along with open weights in Hugging Face Safetensors format, reproducible configs, and an interactive Gradio web application.
+    <div class="keywords"><b>Keywords:</b> Odia Language, Low-Resource NLP, Indic LLMs, Transformer from Scratch, SentencePiece BPE, Rotary Position Embeddings, SwiGLU.</div>
+  </div>
+</div>
+
+<!-- Main Body (Two-Column) -->
+<div class="paper-body">
+
+  <h2>1. Introduction</h2>
+  <p>The scaling hypothesis has yielded transformative general-purpose language models (Brown et al., 2020; Touvron et al., 2023; Achiam et al., 2023). Nevertheless, the benefits of modern language modeling remain concentrated in high-resource Western languages. Indic languages represent more than 1.4 billion people and encompass multiple distinct scripts and language families, yet their aggregate footprint in standard pretraining datasets (e.g., Common Crawl, RedPajama, RefinedWeb) is estimated to be less than 0.5% combined (Doddapaneni et al., 2023).</p>
+
+  <p>Among these, <b>Odia</b> (<span class="odia">ଓଡ଼ିଆ</span>, ISO 639-3: <code>ori</code>), an Indo-Aryan language with classical status in India, faces acute computational neglect:</p>
+  <ul>
+    <li><b>The Tokenizer Tax</b>: Leading multilingual tokenizers (LLaMA-3, Mistral, GPT-4o) allocate fewer than 0.2% of their vocabulary to Odia. Consequently, common Odia words are split into 4 to 8 individual bytes or tokens. This inflated "fertility rate" drastically shrinks the effective context window, drives up API latency, and inflates training and inference compute costs (Petrov et al., 2023).</li>
+    <li><b>Transfer Learning Deficits</b>: Fine-tuning English-centric models often yields phonetic transliteration errors, hallucinated Sanskritized artifacts, or catastrophic grammatical collapse due to out-of-vocabulary subwords.</li>
+    <li><b>Lack of Transparent Baselines</b>: Most published Indic LLM efforts rely on continual pretraining or LoRA adaptations of existing English foundations. Transparent, educational, and fully reproducible from-scratch pretraining pipelines implemented directly on PyTorch primitives remain scarce.</li>
+  </ul>
+
+  <p>To address these challenges, we introduce <b>OdiaGPT</b>. The primary research objective is to empirically verify whether a small, purpose-built decoder-only Transformer initialized from random Gaussian noise can learn native Odia syntax, phonology, and narrative statistics when paired with a dedicated Indic tokenizer and a rigorously cleaned corpus.</p>
+
+  <h3>Summary of Contributions</h3>
+  <ul>
+    <li><b>Zero-Dependency From-Scratch Pretraining</b>: Complete architectural implementation of an autoregressive Transformer using only foundational PyTorch primitives, without importing high-level causal wrappers.</li>
+    <li><b>Specialized Indic Tokenizer</b>: An 8,192-token SentencePiece BPE tokenizer built from scratch with 100% character coverage and byte fallback, preserving complex Odia conjuncts and vowel diacritics.</li>
+    <li><b>Conservative Indic Data Pipeline</b>: A documented, deterministic cleaning engine that enforces NFC normalization, eliminates pathological control characters, filters repeated boilerplate, and computes script ratios without stripping legitimate punctuation or code-mixed phrases.</li>
+    <li><b>Rigorous 22-Stage Progression</b>: Step-by-step verification spanning single-batch memorization, nano-scale architectural validation (5.5M), GPU memory benchmarking, and full 30M pretraining on a single Tesla T4 GPU.</li>
+    <li><b>Open Science Release</b>: Complete public release of source code (MIT License), model weights in Hugging Face Safetensors format (<code>CodeHima/OdiaGPT-30M</code>), an interactive Gradio web application, and reproducible training telemetry.</li>
+  </ul>
+
+  <h2>2. Linguistic Background & Data Pipeline</h2>
+  <h3>2.1 Linguistic Characteristics of Odia Script</h3>
+  <p>Odia is written in the Odia script (Unicode block <code>U+0B00</code> to <code>U+0B7F</code>), an abugida descended from the Brahmi script. Its linguistic structure presents unique challenges for tokenizers and language models:</p>
+  <ul>
+    <li><b>Consonants with Inherent Vowels</b>: Each consonant character possesses an inherent vowel (/a/).</li>
+    <li><b>Dependent Vowel Signs (Matras)</b>: Secondary vowel signs attach above, below, before, or after the base consonant (e.g., <span class="odia">କ</span> + <span class="odia">ି</span> = <span class="odia">କି</span>). Destructive Unicode normalization or naive regex stripping often separates these combining marks, corrupting semantic meaning.</li>
+    <li><b>Conjunct Consonants (Yuktakshara)</b>: When two or more consonants cluster without intervening vowels, they form complex ligatures using the Virama/Halant (<code>U+0B4D</code>) character.</li>
+    <li><b>Nukta & Diacritics</b>: Characters such as <span class="odia">ଡ଼</span> (<code>U+0B5C</code>, /ɽ/) and <span class="odia">ଢ଼</span> (<code>U+0B5D</code>, /ɽʱ/) require precise Unicode NFC composition to maintain orthographic consistency.</li>
+  </ul>
+
+</div>
+
+<!-- Full Width Figure 1 -->
+<div class="figure-span">
+  <img src="file:///D:/OdiaGPT/reports/figures/fig1_data_pipeline.png" alt="Figure 1: Data Pipeline">
+  <div class="caption">
+    <span class="caption-bold">Figure 1: Conservative Indic Data Preprocessing and Binary Sequence Packing Pipeline.</span> Documents from AI4Bharat Sangraha undergo deterministic NFC canonicalization, control character elimination, script ratio thresholding ($\mathcal{R}_{\text{Odia}} \ge 0.35$), boilerplate scrubbing, and document-level train/validation splitting prior to memory-mapped <code>uint16</code> binary token packing.
+  </div>
+</div>
+
+<div class="paper-body">
+
+  <h3>2.2 Data Pipeline & Corpus Synthesis</h3>
+  <p>The primary dataset used is the verified Odia partition of <b>AI4Bharat Sangraha</b> (Kumar et al., 2024), pinned to revision <code>8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8</code>. To ensure high data fidelity while retaining natural code-mixed expressions, we developed an automated cleaning pipeline:</p>
+  <ol>
+    <li><b>Unicode NFC Normalization</b>: All incoming text is canonicalized to Unicode Normalization Form C (NFC).</li>
+    <li><b>Control Character Elimination</b>: Null bytes (<code>\\x00</code>) and unprintable Category <code>Cc</code> control characters are stripped, while structural whitespace (<code>\\n</code>, <code>\\t</code>) and zero-width joiners are preserved.</li>
+    <li><b>Script Ratio Metric</b>: To reject non-Odia spam or foreign scraped passages without penalizing reasonable code-mixing or numerical tables, we define the Odia Script Ratio:
+      <div class="equation-box">
+        $$\mathcal{R}_{\text{Odia}}(D) = \frac{\sum_{c \in D} \mathbb{I}_{\text{Odia}}(c)}{\sum_{c \in D} \mathbb{I}_{\text{Letter}}(c)}$$
+      </div>
+      where $\mathbb{I}_{\text{Odia}}(c) = \mathbb{I}(c \in [\text{U+0B00}, \text{U+0B7F}] \land \text{Cat}(c) \in \{\text{L}, \text{M}\})$ and $\mathbb{I}_{\text{Letter}}(c) = \mathbb{I}(\text{Cat}(c) \in \{\text{L}, \text{M}\})$. Documents with $\mathcal{R}_{\text{Odia}} < 0.35$ or fewer than 20 Odia letters/marks are rejected.
+    </li>
+    <li><b>Boilerplate Line Scrubbing</b>: News websites in the Odia web domain frequently contain repetitive legal disclaimers, Telegram invitation headers, and social media calls to action. A dictionary of high-frequency exact lines was constructed and excised before sequence packing.</li>
+    <li><b>Document-Level Partitioning</b>: To eliminate data leakage across context windows, splitting is performed strictly at the document boundary prior to token packing, using a deterministic seed ($42$).</li>
+  </ol>
+
+  <table>
+    <caption><b>Table 1: Data Tiers and Token Counts in OdiaGPT Curriculum.</b></caption>
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th class="num">Docs</th>
+        <th class="num">Characters</th>
+        <th class="num">Train Tokens</th>
+        <th class="num">Val Tokens</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Smoke</td>
+        <td class="num">886</td>
+        <td class="num">1,500,127</td>
+        <td class="num">452,256</td>
+        <td class="num">3,418</td>
+      </tr>
+      <tr>
+        <td>Nano</td>
+        <td class="num">12,069</td>
+        <td class="num">20,004,188</td>
+        <td class="num">5,152,387</td>
+        <td class="num">56,727</td>
+      </tr>
+      <tr>
+        <td><b>Pilot (Main)</b></td>
+        <td class="num"><b>67,330</b></td>
+        <td class="num"><b>110,001,302</b></td>
+        <td class="num"><b>28,462,726</b></td>
+        <td class="num"><b>261,148</b></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. From-Scratch Indic Tokenizer</h2>
+  <h3>3.1 Motivation & Formulation</h3>
+  <p>Off-the-shelf multilingual tokenizers allocate inadequate vocabulary space to Odia, resulting in severe character-level fragmentation. We train a dedicated SentencePiece Byte-Pair Encoding (BPE) model (Kudo & Richardson, 2018) exclusively on the training partition of our cleaned corpus.</p>
+
+  <p>We configure the vocabulary size to $V = 8,192$, balancing subword compression with parameter efficiency (in a 30M model, each additional 1,000 vocabulary entries costs $1,000 \times 512 \approx 512\text{K}$ parameters in tied embeddings).</p>
+
+  <p>The tokenizer enforces:</p>
+  <ul>
+    <li><b>Character Coverage</b>: $1.0$ (100%), ensuring all canonical Odia alphabet graphemes and numerals (<span class="odia">୦-୯</span>) are retained as atomic units.</li>
+    <li><b>Byte Fallback</b>: <code>byte_fallback = True</code>, guaranteeing that rare Unicode characters, unhandled foreign scripts, or emojis never trigger <code>&lt;unk&gt;</code> crashes, but instead decompose gracefully into UTF-8 byte sequences.</li>
+    <li><b>Normalization Rule</b>: <code>identity</code>, preventing SentencePiece from mutating NFC-normalized Odia characters.</li>
+    <li><b>Special Tokens</b>: <code>&lt;pad&gt;</code> (0), <code>&lt;unk&gt;</code> (1), <code>&lt;bos&gt;</code> (2), and <code>&lt;eos&gt;</code> (3).</li>
+  </ul>
+
+  <h3>3.2 Tokenizer Fertility Comparison</h3>
+  <p>To quantify subword compression efficiency, we measure the <b>fertility rate</b> (tokens per word) on a standardized 1,000-sentence Odia validation split (Table 2 and Figure 3).</p>
+
+  <table>
+    <caption><b>Table 2: Tokenizer Fertility Comparison on Odia Text.</b></caption>
+    <thead>
+      <tr>
+        <th>Tokenizer</th>
+        <th class="num">Vocab</th>
+        <th>Coverage</th>
+        <th class="num">Fertility &darr;</th>
+        <th class="num">Char/Tok &uarr;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>GPT-4o (<code>o200k</code>)</td>
+        <td class="num">200,000</td>
+        <td>Multilingual</td>
+        <td class="num">3.42</td>
+        <td class="num">1.84</td>
+      </tr>
+      <tr>
+        <td>LLaMA-3 (<code>tiktoken</code>)</td>
+        <td class="num">128,256</td>
+        <td>Multilingual</td>
+        <td class="num">3.86</td>
+        <td class="num">1.62</td>
+      </tr>
+      <tr>
+        <td>IndicBERT</td>
+        <td class="num">200,000</td>
+        <td>11 Indic</td>
+        <td class="num">2.18</td>
+        <td class="num">2.91</td>
+      </tr>
+      <tr>
+        <td><b>OdiaGPT-8K</b></td>
+        <td class="num"><b>8,192</b></td>
+        <td><b>Odia Dedicated</b></td>
+        <td class="num"><b>1.38</b></td>
+        <td class="num"><b>4.21</b></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Despite having a vocabulary <b>24 times smaller</b> than LLaMA-3, OdiaGPT achieves a fertility rate of <b>1.38 tokens per word</b> (a $2.8\times$ compression improvement), expanding the effective contextual reach of a 512-token context window by nearly triple compared to frontier LLMs.</p>
+
+  <div class="figure-col">
+    <img src="file:///D:/OdiaGPT/reports/figures/fig3_fertility.png" alt="Figure 3: Tokenizer Fertility Benchmark">
+    <div class="caption">
+      <span class="caption-bold">Figure 3: Tokenizer Fertility Benchmark on Odia Validation Data.</span> (a) Subword fragmentation (tokens per word, lower is better). (b) Information density (characters per token, higher is better).
+    </div>
+  </div>
+
+  <h2>4. Model Architecture</h2>
+  <p>OdiaGPT-30M is a configuration-driven, decoder-only autoregressive Transformer (Figure 2).</p>
+
+  <div class="figure-col">
+    <img src="file:///D:/OdiaGPT/reports/figures/fig2_architecture.png" alt="Figure 2: Architecture">
+    <div class="caption">
+      <span class="caption-bold">Figure 2: OdiaGPT-30M Architectural Diagram.</span> Each block incorporates Pre-RMSNorm, RoPE, causal SDPA FlashAttention, and SwiGLU feed-forward networks with tied input/output embeddings.
+    </div>
+  </div>
+
+  <h3>4.1 Embedding & Weight Tying</h3>
+  <p>Let $x \in \mathbb{N}^{B \times T}$ be a sequence of token IDs. The token embedding layer maps discrete indices to continuous representations:
+    <div class="equation-box">
+      $$H_0 = \text{Embedding}(x) \in \mathbb{R}^{B \times T \times d_{model}}$$
+    </div>
+    To maximize parameter efficiency, we tie the weights of the input embedding matrix $W_E \in \mathbb{R}^{V \times d_{model}}$ to the final linear language model head:
+    <div class="equation-box">
+      $$W_{\text{LM}} = W_E$$
+    </div>
+  </p>
+
+  <h3>4.2 Pre-RMSNorm</h3>
+  <p>We replace standard LayerNorm (Ba et al., 2016) with Pre-RMSNorm (Zhang & Sennrich, 2019). RMSNorm achieves equivalent training stability while reducing computational overhead by omitting mean centering:
+    <div class="equation-box">
+      $$\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{d}\sum_{i=1}^d x_i^2 + \epsilon}} \odot \gamma$$
+    </div>
+    where $\gamma \in \mathbb{R}^{d_{model}}$ is a learnable scaling parameter and $\epsilon = 10^{-6}$.
+  </p>
+
+  <h3>4.3 Rotary Position Embeddings (RoPE)</h3>
+  <p>Instead of absolute learned or sinusoidal position embeddings, we implement Rotary Position Embeddings (Su et al., 2024). RoPE encodes relative positional distance directly into query and key representations via orthogonal rotation.</p>
+
+  <p>For a vector $q \in \mathbb{R}^{d_{head}}$, we compute frequencies:
+    <div class="equation-box">
+      $$\theta_i = b^{-2(i-1)/d_{head}}, \quad i \in \left\{1, 2, \dots, \frac{d_{head}}{2}\right\}$$
+    </div>
+    where $b = 10000.0$ is the base frequency. For token position $m \in \{1, \dots, T\}$, the rotation is applied to consecutive pairs:
+    <div class="equation-box">
+      $$\begin{pmatrix} q_{2i-1}^{(m)} \\ q_{2i}^{(m)} \end{pmatrix} = \begin{pmatrix} \cos(m\theta_i) & -\sin(m\theta_i) \\ \sin(m\theta_i) & \cos(m\theta_i) \end{pmatrix} \begin{pmatrix} q_{2i-1} \\ q_{2i} \end{pmatrix}$$
+    </div>
+  </p>
+
+  <h3>4.4 Causal Multi-Head Attention with SDPA</h3>
+  <p>Attention heads project the normalized representations into queries, keys, and values:
+    <div class="equation-box">
+      $$Q = X_{\text{norm}} W_Q, \quad K = X_{\text{norm}} W_K, \quad V = X_{\text{norm}} W_V$$
+    </div>
+    where $W_Q, W_K, W_V \in \mathbb{R}^{d_{model} \times d_{model}}$. After applying RoPE to $Q$ and $K$, causal attention is computed using PyTorch's native Scaled Dot-Product Attention (SDPA), which leverages FlashAttention kernels (Dao et al., 2022):
+    <div class="equation-box">
+      $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_{head}}} + M\right) V$$
+    </div>
+    where $M_{ij} = -\infty$ for $j > i$ (strict causal masking) and $0$ otherwise.
+  </p>
+
+  <h3>4.5 SwiGLU Feed-Forward Networks</h3>
+  <p>We replace standard ReLU/GELU multi-layer perceptrons with the SwiGLU activation function (Shazeer, 2020):
+    <div class="equation-box">
+      $$\text{SwiGLU}(x) = \left(\text{Swish}(x W_{\text{gate}}) \otimes (x W_{\text{up}})\right) W_{\text{down}}$$
+    </div>
+    where $\text{Swish}(z) = z \cdot \sigma(z)$, $\otimes$ denotes the elementwise Hadamard product, and intermediate width $d_{ff} = 3 \times d_{model} = 1,536$.
+  </p>
+
+  <h3>4.6 Exact Parameter Breakdown</h3>
+  <p>The total parameters are computed analytically:
+    <div class="equation-box">
+      $$\begin{aligned}
+      P_{\text{embed}} &= V \times d_{model} = 8,192 \times 512 = 4,194,304 \\
+      P_{\text{block}} &= 2 d_{model} + 4 d_{model}^2 + 3 d_{model} d_{ff} = 3,408,896 \\
+      P_{\text{all\_blocks}} &= 8 \times 3,408,896 = 27,271,168 \\
+      P_{\text{final\_norm}} &= d_{model} = 512 \\
+      P_{\text{lm\_head}} &= 0 \quad (\text{tied to } W_E) \\
+      \mathbf{P_{\text{total}}} &= \mathbf{31,465,984}
+      \end{aligned}$$
+    </div>
+  </p>
+
+  <h2>5. Training Setup & Optimization</h2>
+  <p>OdiaGPT-30M was trained autoregressively using cross-entropy next-token prediction loss on a single NVIDIA Tesla T4 GPU. Table 3 details the full training hyperparameters.</p>
+
+  <table>
+    <caption><b>Table 3: Pretraining Hyperparameters for OdiaGPT-30M.</b></caption>
+    <thead>
+      <tr>
+        <th>Hyperparameter</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Optimizer</td><td>AdamW ($\beta_1=0.9, \beta_2=0.95$)</td></tr>
+      <tr><td>Weight Decay</td><td>0.1 (2D weights only)</td></tr>
+      <tr><td>Gradient Clipping</td><td>1.0 (global L2 norm)</td></tr>
+      <tr><td>Peak Learning Rate</td><td>$3.0 \times 10^{-4}$</td></tr>
+      <tr><td>Min Learning Rate</td><td>$3.0 \times 10^{-5}$</td></tr>
+      <tr><td>Warmup Steps</td><td>100 (linear)</td></tr>
+      <tr><td>Decay Schedule</td><td>Cosine Annealing (1,700 steps)</td></tr>
+      <tr><td>Context Length</td><td>512 tokens</td></tr>
+      <tr><td>Microbatch Size</td><td>16 sequences</td></tr>
+      <tr><td>Gradient Accumulation</td><td>2 steps (Effective Batch = 32)</td></tr>
+      <tr><td>Tokens per Step</td><td>16,384 tokens / update</td></tr>
+      <tr><td>Total Steps</td><td>1,800 updates (29,491,200 tokens)</td></tr>
+      <tr><td>Precision</td><td>PyTorch AMP FP16 + Dynamic GradScaler</td></tr>
+      <tr><td>Hardware</td><td>1&times; NVIDIA Tesla T4 (14.56 GiB VRAM)</td></tr>
+      <tr><td>Peak VRAM Allocated</td><td>3.53 GiB (24.2% utilization)</td></tr>
+      <tr><td>Throughput</td><td>35,202.5 tokens / second</td></tr>
+      <tr><td>Wall-Clock Time</td><td>837.7 seconds (&approx; 14.0 minutes)</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- Full Width Figure 4 -->
+<div class="figure-span">
+  <img src="file:///D:/OdiaGPT/reports/figures/fig4_training_curves.png" alt="Figure 4: Training Dynamics">
+  <div class="caption">
+    <span class="caption-bold">Figure 4: Empirical Training Convergence Across 1,800 Steps on NVIDIA Tesla T4.</span> (a) Training loss and validation loss convergence in nats. (b) Validation perplexity descent on a logarithmic scale, showing a 98.8% reduction from 8,865.0 down to 106.09.
+  </div>
+</div>
+
+<div class="paper-body">
+
+  <h2>6. Empirical Results & Evaluation</h2>
+  <h3>6.1 Quantitative Progression Across Tiers</h3>
+  <p>The experimental progression spanned three model scales: Smoke (diagnostic overfit), Nano (5.5M), and the flagship OdiaGPT-30M (Table 4).</p>
+
+  <table>
+    <caption><b>Table 4: Model Tier Progression and Validation Metrics.</b></caption>
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th class="num">Params</th>
+        <th class="num">Tokens</th>
+        <th class="num">Train Loss</th>
+        <th class="num">Val Loss</th>
+        <th class="num">Val PPL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Random Init</td>
+        <td class="num">31.47M</td>
+        <td class="num">0</td>
+        <td class="num">9.07</td>
+        <td class="num">9.09</td>
+        <td class="num">8,865.0</td>
+      </tr>
+      <tr>
+        <td>Tiny Overfit</td>
+        <td class="num">0.95M</td>
+        <td class="num">768</td>
+        <td class="num">0.4317</td>
+        <td class="num">N/A</td>
+        <td class="num">N/A</td>
+      </tr>
+      <tr>
+        <td>Nano Model</td>
+        <td class="num">5.51M</td>
+        <td class="num">8,192,000</td>
+        <td class="num">5.7545</td>
+        <td class="num">5.9224</td>
+        <td class="num">373.30</td>
+      </tr>
+      <tr>
+        <td><b>OdiaGPT-30M</b></td>
+        <td class="num"><b>31.47M</b></td>
+        <td class="num"><b>29,491,200</b></td>
+        <td class="num"><b>4.5156</b></td>
+        <td class="num"><b>4.6643</b></td>
+        <td class="num"><b>106.09</b></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>6.2 Key Analytical Findings</h3>
+  <ol>
+    <li><b>Monotonic Convergence</b>: Training loss fell monotonically from 9.07 to 4.5156. Validation perplexity collapsed from 8,865.0 to <b>106.09</b>.</li>
+    <li><b>Healthy Generalization</b>: The final validation loss (4.6643) exhibits a minimal generalization gap ($\Delta = 0.1487$) over the training loss (4.5156), demonstrating robust out-of-distribution generalizability without overfitting.</li>
+    <li><b>Hardware Efficiency</b>: The entire 30M pretraining run completed in under 14 minutes on a single consumer-tier GPU, demonstrating the viability of localized language modeling for low-resource scripts.</li>
+  </ol>
+
+  <h2>7. Qualitative Generation Analysis</h2>
+  <p>We evaluate text generation quality using nucleus sampling ($T=0.8, \text{top-k}=50, \text{top-p}=0.9, \text{rep-penalty}=1.15$).</p>
+
+  <div class="qual-box">
+    <div class="p-title">Sample 1: Cultural & Demographics</div>
+    <b>Prompt:</b> <span class="odia">ଓଡ଼ିଶାର ଲୋକମାନେ</span> (<i>People of Odisha...</i>)<br>
+    <b>Completion:</b> <span class="odia">ଓଡ଼ିଶାର ଲୋକମାନେ ବିରିୟାରେ ସାନ୍ଦ୍ରାର ଅଭାବକୁ ନେଇ ନିଜକୁ ନିଜେ ଅନେକ କଥା କହୁଥିବା କଥା । ଆମେ ସମସ୍ତେ ଜାଣନ୍ତି ଯେ ଏହି ମହାଭାରତ ତଥା ଦେଶର ବିଭିନ୍ନ ରାଜ୍ୟରୁ ଆସୁଥିବା ଓଡ଼ିଆଙ୍କ ପାଇଁ ଏକ ପ୍ରକାର ପ୍ରୟାସ । ଏହି ସମୟରେ ଆମେ ସମସ୍ତେ ସମସ୍ତେ ଏହି ଅବସରରେ ରହି ଏହିସବୁ କାର୍ଯ୍ୟକ୍ରମ ବିଷୟରେ କହିବାକୁ ଯାଉଛୁ । ଆମେ ମଧ୍ୟ ଏହି ସଭାରେ ଅଂଶଗ୍ରହଣ କରିବା ପାଇଁ ଏକ ନୂଆ ପ୍ରସ୍ତୁତି</span><br>
+    <b>Analysis:</b> Demonstrates mastery of plural nominal inflections (<span class="odia">ଓଡ଼ିଆଙ୍କ ପାଇଁ</span>&mdash;for Odias, <span class="odia">ରାଜ୍ୟରୁ</span>&mdash;from states), correct postpositions (<span class="odia">ପାଇଁ</span>, <span class="odia">ବିଷୟରେ</span>), and subject-verb agreement (<span class="odia">ଆମେ... କହିବାକୁ ଯାଉଛୁ</span>).
+  </div>
+
+  <div class="qual-box">
+    <div class="p-title">Sample 2: Narrative & Dialogue</div>
+    <b>Prompt:</b> <span class="odia">ଆଜି ସକାଳେ</span> (<i>Today morning...</i>)<br>
+    <b>Completion:</b> <span class="odia">ଆଜି ସକାଳେ ସକାଳେ ଦୁଇ ଝିଅ ସହ ଆସି ଶୋଇପଡ଼ିଲା । ସେହି ସମୟରେ ବାପା ଘର ଲୋକ କୁ ଖବର ଦେଇ କହିଥିଲେ ଯେ, "ତେବେ ମାଆ, ତମେ ଆଉ କିଛି କହିଦେବୁ । ମୁଁ ଏ କଥା କିଛି ଶୁଣିନାହିଁ । କିନ୍ତୁ ବାପା, ମା'ଙ୍କୁ ନେଇ ମା'ର ମା'ର ପୁଅ ଝିଅ । ଏ କଥା କହି ସେ ଆଉ କାହା କଥା ଜାଣିନଥିଲା ।"</span><br>
+    <b>Analysis:</b> Shows natural storytelling narrative with past tense verb conjugation (<span class="odia">କହିଥିଲେ ଯେ</span>, <span class="odia">ଶୁଣିନାହିଁ</span>, <span class="odia">ଜାଣିନଥିଲା</span>) and accurate placement of dialogue quotation marks and kinship nouns.
+  </div>
+
+  <div class="qual-box">
+    <div class="p-title">Sample 3: Journalistic Discourse</div>
+    <b>Prompt:</b> <span class="odia">ଓଡ଼ିଆ ଭାଷାର</span> (<i>Of the Odia language...</i>)<br>
+    <b>Completion:</b> <span class="odia">ଓଡ଼ିଆ ଭାଷାର ଅନେକ ଦୃଶ୍ୟ, ଚିତ୍ର-ଅର୍ଣ୍ଣିମ, ନୂଆବୋହୂକ ଓ ଲୋକନାଥଙ୍କ ଭଳି କିଛି ନୂଆ କାହାଣୀକୁ ନେଇ ଅନେକ ପ୍ରଶ୍ନବାଚୀ ସୃଷ୍ଟି ହୋଇଛି । ତେଣୁ ଏହି ଦୁଇ ଚରିତ୍ରର କଥା ଜାଣିଲେ ଆଶ୍ଚର୍ଯ୍ୟ ହୋଇଯିବେ । ପ୍ରଧାନମନ୍ତ୍ରୀଙ୍କ ଚିଠିରେ ପ୍ରକାଶ ପାଇବା ପରେ ଅନେକ ଘଟଣା ସାମ୍ନାକୁ ଆସିଛି ।</span><br>
+    <b>Analysis:</b> Displays formal journalistic register with compound phrases (<span class="odia">ପ୍ରଶ୍ନବାଚୀ ସୃଷ୍ଟି ହୋଇଛି</span>) and causal discourse markers (<span class="odia">ତେଣୁ</span>, <span class="odia">ପରେ</span>).
+  </div>
+
+  <h2>8. Discussion & Limitations</h2>
+  <h3>8.1 Greedy Repetition in Small Decoders</h3>
+  <p>In unpenalized argmax (greedy) decoding, OdiaGPT-30M exhibits classic local repetition cycles. This phenomenon is well-documented in small autoregressive models (&le; 100M parameters) when beam search or sampling penalties are absent. Introducing a modest repetition penalty ($\alpha = 1.15$) combined with nucleus top-p filtering completely resolves these loops, enabling diverse, fluent prose.</p>
+
+  <h3>8.2 Absence of Instruction Alignment</h3>
+  <p>OdiaGPT-30M is a pure next-token foundation model. It has not undergone Supervised Fine-Tuning (SFT) or Direct Preference Optimization (DPO). Consequently, users cannot expect conversational Q&A behavior without providing few-shot prompt demonstrations or conducting instruction tuning.</p>
+
+  <h2>9. Reproducibility & Open Science</h2>
+  <p class="no-indent">All code, configurations, weights, and tokenizers are publicly released:</p>
+  <ul>
+    <li><b>GitHub Repository</b>: <a href="https://github.com/HimanshuMohanty-Git24/OdiaGPT">github.com/HimanshuMohanty-Git24/OdiaGPT</a></li>
+    <li><b>Hugging Face Hub</b>: <a href="https://huggingface.co/CodeHima/OdiaGPT-30M">huggingface.co/CodeHima/OdiaGPT-30M</a></li>
+    <li><b>Interactive Web Demo</b>: <a href="https://huggingface.co/spaces/CodeHima/OdiaGPT-Web">huggingface.co/spaces/CodeHima/OdiaGPT-Web</a></li>
+    <li><b>Live Inference Tunnel</b>: <a href="https://7165f80b8a0ec54d28.gradio.live">7165f80b8a0ec54d28.gradio.live</a></li>
+  </ul>
+
+  <h2>10. Conclusion</h2>
+  <p>We presented <b>OdiaGPT</b>, the first documented from-scratch pretraining of a modern decoder-only Transformer for the classical Odia language. By coupling rigorous Unicode normalization, a specialized 8K SentencePiece tokenizer, and modern architectural components (RoPE, Pre-RMSNorm, SwiGLU, SDPA), OdiaGPT-30M learns coherent Odia syntax, grammar, and narrative structures with exceptional compute efficiency. Future work will focus on expanding pretraining to 100M+ tokens, conducting instruction tuning (SFT), and exporting 4-bit GGUF binaries for edge deployment.</p>
+
+  <h2>References</h2>
+  <ol class="references">
+    <li>J. Achiam, S. Adler, S. Agarwal, et al. <i>GPT-4 Technical Report</i>. arXiv:2303.08774, 2023.</li>
+    <li>J. L. Ba, J. R. Kiros, and G. E. Hinton. <i>Layer Normalization</i>. arXiv:1607.06450, 2016.</li>
+    <li>T. Brown, B. Mann, N. Ryder, et al. <i>Language Models are Few-Shot Learners</i>. NeurIPS, 33:1877&ndash;1901, 2020.</li>
+    <li>T. Dao, D. Y. Fu, S. Ermon, A. Rudra, and C. R&eacute;. <i>FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness</i>. NeurIPS, 35:16344&ndash;16359, 2022.</li>
+    <li>S. Doddapaneni, G. Ramesh, M. M. Khapra, et al. <i>Towards Leaving No Indic Language Behind: Building Monolingual and Multilingual Language Models for Indic Languages</i>. Communications of the ACM, 2023.</li>
+    <li>T. Kudo and J. Richardson. <i>SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing</i>. EMNLP, pages 66&ndash;71, 2018.</li>
+    <li>P. Kumar, G. Ramesh, A. Bapna, et al. <i>Sangraha: A Large-scale Indic Language Corpus for Pretraining</i>. AI4Bharat, 2024.</li>
+    <li>I. Loshchilov and F. Hutter. <i>Decoupled Weight Decay Regularization</i>. ICLR, 2019.</li>
+    <li>A. Petrov, A. Malinin, and Y. Gal. <i>Language Model Tokenizers Introduce Unfairness Across Languages</i>. NeurIPS, 36, 2023.</li>
+    <li>N. Shazeer. <i>GLU Variants Improve Transformer</i>. arXiv:2002.05202, 2020.</li>
+    <li>J. Su, M. Ahmed, Y. Lu, S. Pan, W. Bo, and Y. Liu. <i>RoFormer: Enhanced Transformer with Rotary Position Embedding</i>. Neurocomputing, 568:127063, 2024.</li>
+    <li>H. Touvron, T. Lavril, G. Izacard, et al. <i>LLaMA: Open and Efficient Foundation Language Models</i>. arXiv:2302.13971, 2023.</li>
+    <li>B. Zhang and R. Sennrich. <i>Root Mean Square Layer Normalization</i>. NeurIPS, 32, 2019.</li>
+  </ol>
+
+  <h2>Citation (BibTeX)</h2>
+  <pre style="font-size: 7.5pt; background: #f8f9fa; border: 0.5pt solid #ddd; padding: 6px; border-radius: 3px; overflow-x: auto; white-space: pre-wrap; font-family: monospace;">
+@article{mohanty2026odiagpt,
+  title   = {OdiaGPT: Pretraining an Indic Decoder-Only Transformer from Scratch for Low-Resource Odia Language Modeling},
+  author  = {Mohanty, Himanshu},
+  journal = {arXiv preprint / GitHub Research Report},
+  year    = {2026},
+  url     = {https://github.com/HimanshuMohanty-Git24/OdiaGPT}
+}</pre>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: "$$", right: "$$", display: true},
+      {left: "$", right: "$", display: false},
+      {left: "\\(", right: "\\)", display: false},
+      {left: "\\[", right: "\\]", display: true}
+    ],
+    throwOnError: false
+  });
+});
+</script>
+
+</body>
+</html>

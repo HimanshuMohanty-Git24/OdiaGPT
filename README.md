@@ -5,14 +5,15 @@
 [![Hugging Face Model](https://img.shields.io/badge/🤗%20Hugging%20Face-CodeHima%2FOdiaGPT--30M-FFD21E?style=for-the-badge)](https://huggingface.co/CodeHima/OdiaGPT-30M)
 [![Hugging Face Space](https://img.shields.io/badge/🤗%20Demo-OdiaGPT--Web-blue?style=for-the-badge)](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web)
 [![Gradio Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Gradio-orange?style=for-the-badge)](https://7165f80b8a0ec54d28.gradio.live)
-[![Research Paper](https://img.shields.io/badge/📄%20Paper-PDF%2FReport-purple?style=for-the-badge)](reports/research_paper.md)
+[![Research Paper PDF](https://img.shields.io/badge/📄%20Paper-PDF-red?style=for-the-badge)](reports/research_paper.pdf)
+[![LaTeX Source](https://img.shields.io/badge/📐%20LaTeX-Source-teal?style=for-the-badge)](reports/research_paper.tex)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
 
 **A Small, Modern Odia Decoder-Only Language Model Built & Trained 100% From Scratch**
 
-[Read Research Paper](reports/research_paper.md) • [Explore on Hugging Face](https://huggingface.co/CodeHima/OdiaGPT-30M) • [Interactive Web Demo](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web) • [Live Gradio Session](https://7165f80b8a0ec54d28.gradio.live) • [Architecture](#architecture) • [Getting Started](#getting-started) • [Evaluation](#evaluation--results)
+[📄 Download Paper (PDF)](reports/research_paper.pdf) • [📐 LaTeX Source](reports/research_paper.tex) • [Markdown Paper](reports/research_paper.md) • [Explore on Hugging Face](https://huggingface.co/CodeHima/OdiaGPT-30M) • [Interactive Web Demo](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web) • [Live Gradio Session](https://7165f80b8a0ec54d28.gradio.live)
 
 </div>
 
@@ -169,7 +170,9 @@ OdiaGPT/
 │   ├── checkpoint.py      # Stateful optimizer, scheduler, and RNG checkpointing
 │   ├── cleaning.py        # Conservative Odia script & boilerplate filters
 │   └── unicode_utils.py   # NFC normalization and diacritic preservation
-├── scripts/               # Training, benchmarking, and export scripts
+├── scripts/               # Training, benchmarking, and paper export scripts
+│   ├── generate_paper_figures.py # 300-DPI publication figure generator
+│   ├── build_paper_pdf.py # Headless Chromium PDF paper compiler
 │   ├── train_pilot.py     # OdiaGPT-30M training execution
 │   ├── generate.py        # Benchmark generation runner
 │   ├── upload_to_hf.py    # Hugging Face Hub uploader
@@ -179,7 +182,14 @@ OdiaGPT/
 │   ├── test_model.py      # Causality, shapes, gradients, and RoPE tests
 │   └── test_sdpa.py       # FlashAttention numerical equivalency tests
 ├── reports/               # Technical documentation & academic paper
-│   ├── research_paper.md  # Full citable academic research paper
+│   ├── research_paper.pdf # Complete 7-page publication-grade PDF paper
+│   ├── research_paper.tex # Full compile-ready LaTeX source
+│   ├── research_paper.md  # Markdown edition with KaTeX & mermaid
+│   ├── figures/           # 300-DPI vector & raster publication diagrams
+│   │   ├── fig1_data_pipeline.png / .pdf
+│   │   ├── fig2_architecture.png / .pdf
+│   │   ├── fig3_fertility.png / .pdf
+│   │   └── fig4_training_curves.png / .pdf
 │   ├── main_training_report.md
 │   ├── evaluation_report.md
 │   ├── final_report.md
