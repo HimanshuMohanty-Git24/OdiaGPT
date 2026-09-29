@@ -1,0 +1,27 @@
+{
+  "name": "nano_8k",
+  "config": {
+    "vocab_size": 8192,
+    "model_type": "bpe",
+    "character_coverage": 1.0,
+    "pad_id": 0,
+    "unk_id": 1,
+    "bos_id": 2,
+    "eos_id": 3
+  },
+  "actual_vocab_size": 8192,
+  "special_token_ids": {
+    "pad": 0,
+    "unk": 1,
+    "bos": 2,
+    "eos": 3
+  },
+  "training_documents": 12069,
+  "corpus_sha256": "69aa4eb5e36e41b0f8f6b492f7c0341d86e80aadb655a6716ed44c8362712ded",
+  "source_revision": "8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8",
+  "sentencepiece_version": "0.2.2",
+  "model_path": "/content/drive/MyDrive/OdiaGPT/tokenizer/nano_8k.model",
+  "vocab_path": "/content/drive/MyDrive/OdiaGPT/tokenizer/nano_8k.vocab",
+  "model_sha256": "26b8026425d1e4f58f9acc6c7334968de2885988a824c005574e2baa079e6dfb",
+  "vocab_sha256": "30c2ea6406f26d73222e316304de7149cab59abe62edc78f02e4c1252d2c4263"
+}

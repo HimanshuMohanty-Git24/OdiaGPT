@@ -1,0 +1,7 @@
+# Install only when the corresponding stage needs a dependency.
+torch
+numpy
+datasets
+sentencepiece
+PyYAML
+tqdm

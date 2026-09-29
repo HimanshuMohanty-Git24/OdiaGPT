@@ -1,0 +1,27 @@
+model:
+  vocab_size: 8192
+  context_length: 512
+  n_layers: 8
+  d_model: 512
+  n_heads: 8
+  d_ff: 1536
+  dropout: 0.0
+  rope_base: 10000.0
+  attention_backend: sdpa
+training:
+  seed: 3456
+  learning_rate: 0.0003
+  min_learning_rate: 0.00003
+  weight_decay: 0.1
+  beta1: 0.9
+  beta2: 0.95
+  gradient_clip: 1.0
+  microbatch: 16
+  gradient_accumulation: 2
+  max_steps: 1800
+  warmup_steps: 100
+  eval_interval: 100
+  checkpoint_interval: 100
+  log_interval: 10
+  eval_batches: 20
+  precision: fp16

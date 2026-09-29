@@ -1,0 +1,39 @@
+{
+  "created_utc": "2026-09-29T10:36:31.138383+00:00",
+  "source": "ai4bharat/sangraha",
+  "source_revision": "8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8",
+  "configuration": "verified",
+  "split": "ori",
+  "build_config": {
+    "target_clean_chars": 110000000,
+    "max_stream_rows": 100000,
+    "max_document_chars": 20000,
+    "validation_fraction": 0.01,
+    "split_seed": 42
+  },
+  "cleaning_config": {
+    "min_chars": 80,
+    "min_odia_letter_marks": 20,
+    "min_odia_script_ratio": 0.35,
+    "max_repeated_line_fraction": 0.5
+  },
+  "boilerplate_manifest_sha256": "91ba65e2f8c0bcfcb6552010cace261b1bef88d8fc3fd432dceddbe72e0d346d",
+  "boilerplate_lines_removed": 9005,
+  "boilerplate_docs_affected": 9001,
+  "documents_inspected": 68579,
+  "documents_retained": 67983,
+  "rejections": {
+    "few_odia_characters": 159,
+    "too_long_for_pilot": 436,
+    "duplicate_doc_id": 1
+  },
+  "cleaned_characters": 110001302,
+  "train_documents": 67330,
+  "validation_documents": 653,
+  "train_path": "/content/drive/MyDrive/OdiaGPT/data/processed/pilot_train.jsonl",
+  "val_path": "/content/drive/MyDrive/OdiaGPT/data/processed/pilot_val.jsonl",
+  "train_sha256": "d39b3031218f6b910cd4401e24deaf02a8a83a7287e45169c66b33e8e97eeec7",
+  "val_sha256": "a0e5c8b7baf44577abff2db6a14053bb1578b30d5eb7fa6ad80bc45dca580762",
+  "journal_path": "/content/drive/MyDrive/OdiaGPT/data/raw/pilot_accepted.jsonl",
+  "journal_sha256": "66b8974206b7f65ea4d546c5b30ba8aae14d130ce9a0cc2c945a28ac1bee60c4"
+}

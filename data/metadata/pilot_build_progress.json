@@ -1,0 +1,27 @@
+{
+  "config": {
+    "target_clean_chars": 110000000,
+    "max_stream_rows": 100000,
+    "max_document_chars": 20000,
+    "validation_fraction": 0.01,
+    "split_seed": 42
+  },
+  "revision": "8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8",
+  "boilerplate_sha256": "91ba65e2f8c0bcfcb6552010cace261b1bef88d8fc3fd432dceddbe72e0d346d",
+  "committed_rows": 68500,
+  "source_types": {
+    "web": 58321,
+    "pdf": 10176,
+    "speech": 3
+  },
+  "rejections": {
+    "few_odia_characters": 159,
+    "too_long_for_pilot": 436,
+    "duplicate_doc_id": 1
+  },
+  "nfc_count": 68474,
+  "boilerplate_lines_removed": 8995,
+  "boilerplate_docs_affected": 8991,
+  "documents": 67904,
+  "cleaned_chars": 109877565
+}

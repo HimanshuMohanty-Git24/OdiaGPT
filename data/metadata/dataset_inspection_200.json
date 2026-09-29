@@ -1,0 +1,23 @@
+{
+  "source": "ai4bharat/sangraha",
+  "configuration": "verified",
+  "split": "ori",
+  "sample_method": "first 200 streamed rows; not a representative random sample",
+  "rows_inspected": 200,
+  "type_counts": {
+    "web": 174,
+    "pdf": 26
+  },
+  "text_length_min": 253,
+  "text_length_median": 1041.0,
+  "text_length_mean": 1610.16,
+  "text_length_max": 16440,
+  "odia_ratio_min": 0.0,
+  "odia_ratio_median": 0.9753,
+  "odia_ratio_mean": 0.9575,
+  "odia_ratio_max": 0.9876,
+  "nfc_normalized_rows": 200,
+  "unwanted_control_characters": 0,
+  "duplicate_doc_ids_in_sample": 0,
+  "exact_duplicate_texts_in_sample": 0
+}

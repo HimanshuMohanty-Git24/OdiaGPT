@@ -1,0 +1,45 @@
+{
+  "name": "nano_8k",
+  "dtype": "uint16_le",
+  "vocab_size": 8192,
+  "special_token_ids": {
+    "pad": 0,
+    "unk": 1,
+    "bos": 2,
+    "eos": 3
+  },
+  "document_boundaries": "BOS before and EOS after each document",
+  "tokenizer_sha256": "26b8026425d1e4f58f9acc6c7334968de2885988a824c005574e2baa079e6dfb",
+  "corpus_manifest_sha256": "a17541853f60bdb1d2fa9c94ba8bd7e87e5a988a243d6f7a6eac97263e8c333e",
+  "cleaning_config": {
+    "min_chars": 80,
+    "min_odia_letter_marks": 20,
+    "min_odia_script_ratio": 0.35,
+    "max_repeated_line_fraction": 0.5
+  },
+  "split_seed": 42,
+  "dataset_source": "ai4bharat/sangraha",
+  "dataset_configuration": "verified",
+  "dataset_split": "ori",
+  "dataset_revision": "8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8",
+  "splits": {
+    "train": {
+      "path": "/content/drive/MyDrive/OdiaGPT/data/tokenized/nano_8k_train.bin",
+      "documents": 12069,
+      "tokens": 5152387,
+      "bytes": 10304774,
+      "sha256": "171961f337b60e9c1078852933d1bb25533c327e8f25a5a0757c6237fd5e03e7",
+      "maximum_token_id": 8191,
+      "source_sha256": "69aa4eb5e36e41b0f8f6b492f7c0341d86e80aadb655a6716ed44c8362712ded"
+    },
+    "validation": {
+      "path": "/content/drive/MyDrive/OdiaGPT/data/tokenized/nano_8k_val.bin",
+      "documents": 130,
+      "tokens": 56727,
+      "bytes": 113454,
+      "sha256": "716434f0ae5f82411ae5712d54e8ba9efd5fd6b751ff358bd3d07b5e2253f73e",
+      "maximum_token_id": 7974,
+      "source_sha256": "a769a3b7cffeda25fd15ca3092050a5d7d7a021469de35c7c842392f440aa6b2"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "smoke_4k",
+  "config": {
+    "vocab_size": 4096,
+    "model_type": "bpe",
+    "character_coverage": 1.0,
+    "pad_id": 0,
+    "unk_id": 1,
+    "bos_id": 2,
+    "eos_id": 3
+  },
+  "actual_vocab_size": 4096,
+  "special_token_ids": {
+    "pad": 0,
+    "unk": 1,
+    "bos": 2,
+    "eos": 3
+  },
+  "training_documents": 877,
+  "corpus_sha256": "27f26f988ebda4de761c0ed92672bee9c8264d41c7ce7f8d1bc8a2e5f4f5cd20",
+  "source_revision": "8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8",
+  "sentencepiece_version": "0.2.2",
+  "model_path": "/content/drive/MyDrive/OdiaGPT/tokenizer/smoke_4k.model",
+  "vocab_path": "/content/drive/MyDrive/OdiaGPT/tokenizer/smoke_4k.vocab",
+  "model_sha256": "c6bb0d75541659166554b45a437f15e8e44535fae19d99be1f46b542eb268551",
+  "vocab_sha256": "44721189d29957b05bb76492628cdf576c99f0df8359b0c14060bbebdda0f0c9"
+}

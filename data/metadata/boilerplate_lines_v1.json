@@ -1,0 +1,36 @@
+{
+  "name": "boilerplate_lines_v1",
+  "derived_from": "nano training documents only",
+  "nano_train_sha256": "69aa4eb5e36e41b0f8f6b492f7c0341d86e80aadb655a6716ed44c8362712ded",
+  "selection_rule": "exact nonempty line, >=20 characters, in >=30 distinct train documents",
+  "lines": [
+    {
+      "text": "ପଢନ୍ତୁ ଓଡ଼ିଶା ରିପୋର୍ଟର ଖବର ଏବେ ଟେଲିଗ୍ରାମ୍ ରେ। ସମସ୍ତ ବଡ ଖବର ପାଇବା ପାଇଁ ଏଠାରେ କ୍ଲିକ୍ କରନ୍ତୁ।",
+      "train_document_count": 859
+    },
+    {
+      "text": "Digitized by srujanika@gmail.com",
+      "train_document_count": 424
+    },
+    {
+      "text": "Digitized by PPRACHIN, SOA",
+      "train_document_count": 114
+    },
+    {
+      "text": "ନ୍ୟୁଜ୍ ୧୮ ଓଡ଼ିଆରେ ବ୍ରେକିଙ୍ଗ୍ ନ୍ୟୁଜ୍ ପଢ଼ିବାରେ ପ୍ରଥମ ହୁଅନ୍ତୁ| ଆଜିର ସର୍ବଶେଷ ଖବର, ଲାଇଭ୍ ନ୍ୟୁଜ୍ ଅପଡେଟ୍, ନ୍ୟୁଜ୍ ୧୮ ଓଡ଼ିଆ ୱେବସାଇଟରେ ସବୁଠାରୁ ନିର୍ଭରଯୋଗ୍ୟ ଓଡ଼ିଆ ଖବର ପଢ଼ନ୍ତୁ ।",
+      "train_document_count": 113
+    },
+    {
+      "text": "© 2023 - Odisha Reporter. All Rights Reserved.",
+      "train_document_count": 38
+    },
+    {
+      "text": "Source: Author, Digitized by PPRACHIN, SOA",
+      "train_document_count": 32
+    },
+    {
+      "text": "Digitized by srujan ka@gmail.com",
+      "train_document_count": 30
+    }
+  ]
+}

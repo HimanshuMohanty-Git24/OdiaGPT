@@ -1,0 +1,22 @@
+{
+  "config": {
+    "target_clean_chars": 20000000,
+    "max_stream_rows": 40000,
+    "max_document_chars": 20000,
+    "validation_fraction": 0.01,
+    "split_seed": 42
+  },
+  "revision": "8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8",
+  "committed_rows": 12250,
+  "source_types": {
+    "web": 10398,
+    "pdf": 1852
+  },
+  "rejections": {
+    "few_odia_characters": 24,
+    "too_long_for_nano": 74
+  },
+  "nfc_count": 12247,
+  "documents": 12152,
+  "cleaned_chars": 19905997
+}

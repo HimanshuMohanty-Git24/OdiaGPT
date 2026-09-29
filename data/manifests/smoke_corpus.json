@@ -1,0 +1,33 @@
+{
+  "created_utc": "2026-09-29T06:13:12.276973+00:00",
+  "source": "ai4bharat/sangraha",
+  "source_revision": "8b813c3f62d37b2fa174d68c31e8b35ae2fe85e8",
+  "configuration": "verified",
+  "split": "ori",
+  "build_config": {
+    "target_clean_chars": 1500000,
+    "max_stream_rows": 3000,
+    "max_document_chars": 20000,
+    "validation_fraction": 0.01,
+    "split_seed": 42
+  },
+  "cleaning_config": {
+    "min_chars": 80,
+    "min_odia_letter_marks": 20,
+    "min_odia_script_ratio": 0.35,
+    "max_repeated_line_fraction": 0.5
+  },
+  "documents_inspected": 893,
+  "documents_retained": 886,
+  "rejections": {
+    "few_odia_characters": 2,
+    "too_long_for_smoke": 5
+  },
+  "cleaned_characters": 1500127,
+  "train_documents": 877,
+  "validation_documents": 9,
+  "train_path": "/content/drive/MyDrive/OdiaGPT/data/processed/smoke_train.jsonl",
+  "val_path": "/content/drive/MyDrive/OdiaGPT/data/processed/smoke_val.jsonl",
+  "train_sha256": "27f26f988ebda4de761c0ed92672bee9c8264d41c7ce7f8d1bc8a2e5f4f5cd20",
+  "val_sha256": "f6e749aa4f4b359527e8253df08b81865eeea1e2c61a6bb5df2be9f97e20c1ed"
+}

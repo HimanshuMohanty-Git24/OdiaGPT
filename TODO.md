@@ -1,0 +1,24 @@
+# OdiaGPT TODO
+
+- [x] Environment inspection
+- [x] Persistent storage setup
+- [x] Project structure and initial state files
+- [x] Dataset access test
+- [x] Dataset inspection
+- [x] Odia cleaning functions
+- [x] Cleaning tests
+- [x] Small cleaned corpus
+- [x] Tokenizer training
+- [x] Tokenizer tests
+- [x] Tokenized binary dataset
+- [x] Model implementation
+- [x] Model unit tests
+- [x] Tiny-overfit test
+- [x] Nano experiment
+- [x] Generation test
+- [x] Checkpoint/resume test
+- [x] GPU memory benchmark
+- [x] Pilot experiment
+- [x] 30M serious experiment
+- [x] Evaluation
+- [x] Final report
