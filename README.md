@@ -2,6 +2,7 @@
 
 <div align="center">
 
+[![YouTube Video](https://img.shields.io/badge/YouTube-Explainer%20Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/vSq5DHZQX38)
 [![Hugging Face Model](https://img.shields.io/badge/🤗%20Hugging%20Face-CodeHima%2FOdiaGPT--30M-FFD21E?style=for-the-badge)](https://huggingface.co/CodeHima/OdiaGPT-30M)
 [![Hugging Face Space](https://img.shields.io/badge/🤗%20Demo-OdiaGPT--Web-blue?style=for-the-badge)](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web)
 [![Gradio Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Gradio-orange?style=for-the-badge)](https://7165f80b8a0ec54d28.gradio.live)
@@ -13,7 +14,24 @@
 
 **A Small, Modern Odia Decoder-Only Language Model Built & Trained 100% From Scratch**
 
-[📄 Download Paper (PDF)](reports/research_paper.pdf) • [📐 LaTeX Source](reports/research_paper.tex) • [Markdown Paper](reports/research_paper.md) • [Explore on Hugging Face](https://huggingface.co/CodeHima/OdiaGPT-30M) • [Interactive Web Demo](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web) • [Live Gradio Session](https://7165f80b8a0ec54d28.gradio.live)
+[🎬 YouTube Video](https://youtu.be/vSq5DHZQX38) • [📄 Download Paper (PDF)](reports/research_paper.pdf) • [📐 LaTeX Source](reports/research_paper.tex) • [Markdown Paper](reports/research_paper.md) • [Explore on Hugging Face](https://huggingface.co/CodeHima/OdiaGPT-30M) • [Interactive Web Demo](https://huggingface.co/spaces/CodeHima/OdiaGPT-Web) • [Live Gradio Session](https://7165f80b8a0ec54d28.gradio.live)
+
+</div>
+
+---
+
+## 🎬 Project Explainer Video (100-Second Deep Dive)
+
+Watch the complete visual architecture breakdown, tokenization benchmarking against LLaMA-3, and empirical training dynamics on YouTube:
+
+<div align="center">
+
+[![OdiaGPT Explainer Video](reports/thumbnail.jpg)](https://youtu.be/vSq5DHZQX38)
+
+### **[▶️ Click Here to Watch the Explainer Video on YouTube (youtu.be/vSq5DHZQX38)](https://youtu.be/vSq5DHZQX38)**
+*100-Second Animated Deep Dive • 1080p Full HD • Studio Neural Voiceover*
+
+*(Local raw video copy: [`reports/odiagpt-explainer.mp4`](reports/odiagpt-explainer.mp4))*
 
 </div>
 
